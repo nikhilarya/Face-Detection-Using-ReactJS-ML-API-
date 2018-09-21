@@ -4,6 +4,7 @@ import FaceRecognition from './components/FaceRecognition/FaceRecognition';
 import Logo from './components/Logo/Logo';
 import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm';
 import Rank from './components/Rank/Rank';
+import SignIn from './components/SignIn/SignIn';
 import Clarifai from 'clarifai';
 //import Particles from 'react-particles-js';
 
@@ -11,7 +12,7 @@ import Clarifai from 'clarifai';
 import './App.css';
 
 const app = new Clarifai.App({
- apiKey: '56f0cd0c34e1482ab0b1361647fd73b1'
+ apiKey: '90f6107c432e4942a7ed47e19f30f441'
 });
 
 class App extends Component {
@@ -26,6 +27,7 @@ class App extends Component {
   }
 
   calculateFaceLocation = (data) => {
+    //console.log(data);
     const clarifaiFace = data.outputs[0].data.regions[0].region_info.bounding_box;
     const image = document.getElementByID('inputImage');
     const width = Number(image.width);
@@ -39,6 +41,7 @@ class App extends Component {
   }
 
   displayFaceBox = (box) => {
+    //console.log(box);
     this.setState({box: box});
   }
 
@@ -49,7 +52,7 @@ class App extends Component {
   onButtonSubmit = () => {
     this.setState({ imageUrl: this.state.input })
     app.models.predict(Clarifai.FACE_DETECT_MODEL, this.state.input)
-    .then(response => console.log(this.displayFaceBox(this.calculateFaceLocation(response)))
+    .then(response => this.displayFaceBox(this.calculateFaceLocation(response))
     .catch(err => console.log(err))
     );
   }
@@ -57,7 +60,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-
+        <SignIn />
         <Navigation />
         <Logo />
         <Rank />
@@ -65,7 +68,7 @@ class App extends Component {
           onInputChange={this.onInputChange}
           onButtonSubmit={this.onButtonSubmit}
         />
-        <FaceRecognition imageUrl={this.state.imageUrl}/>
+        <FaceRecognition box={this.state.box} imageUrl={this.state.imageUrl}/>
         {/*
                   <Particles 
               className='particles'
